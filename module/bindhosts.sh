@@ -82,9 +82,9 @@ run_crond() {
 
 custom_cron() {
 	shift
- 	# Make sure there are 5 args
- 	# c/o changhuapeng
-	if [ ! "$(echo "$1" | wc -w)" -eq 5 ] || [ ! -z "$2" ]; then
+	# c/o changhuapeng
+	if ( ! echo "$1" | grep -Eqw "^(@reboot|@hourly|@midnight|@daily|@weekly|@monthly|@annually|@yearly)$") && 
+		{ [ ! "$(echo "$1" | wc -w)" -eq 5 ] || [ ! -z "$2" ]; }; then
 		# shoutout to native test and holmes
 		echo "[!] futile cronjob" 
 		echo "[!] syntax: --custom-cron \"0 2 * * *\" " 
