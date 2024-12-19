@@ -11,7 +11,7 @@ helper_mode=""
 
 # reusable functions
 mount_bind() { 
-	mount --bind "$MODDIR/system/etc/hosts" /system/etc/hosts
+	mount --bind "$target_hostsfile" /system/etc/hosts
 }
 
 overlay_routine() {
