@@ -11,5 +11,5 @@
 # mainly used to circumvent dns based filering by upstream (ISP, telecom, network provider)
 # they wont be filtered out
 #
-https://adaway.org/hosts.txt
+https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
 https://raw.githubusercontent.com/r-a-y/mobile-hosts/master/AdguardDNS.txt
