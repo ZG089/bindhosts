@@ -88,10 +88,10 @@
 
 ## mode=6
 ### ksu_source_mod
-- KernelSU only  
-- **OPT-IN** only 
+- KernelSU try_umount assisted mount --bind
 - Requires source modification: [reference](https://github.com/tiann/KernelSU/commit/2b2b0733d7c57324b742c017c302fc2c411fe0eb)  
-- **WARNING**: Conflicts with SuSFS. You don’t need this if you can implement SuSFS.  
+- Supported on KernelSU NEXT 12183+ [reference](https://github.com/rifsxd/KernelSU-Next/commit/9f30b48e559fb5ddfd088c933af147714841d673)
+- **WARNING**: Conflicts with SuSFS. You don’t need this if you can implement SuSFS.
 - Adaway compatible
 - Hiding: good method but you can probably just implement susfs.
 
@@ -113,7 +113,6 @@
 - susfs-assisted overlayfs rw mount
 - KernelSU only  
 - Requires susfs-patched kernel and userspace tool
-- **OPT-IN** only due to ksu_susfs_bind mode being a better choice
 - Adaway compatible
 - Hiding: good method but ksu_susfs_bind is easier
 

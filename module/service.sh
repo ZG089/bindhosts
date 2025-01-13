@@ -16,8 +16,8 @@ mount_bind() {
 
 overlay_routine() {
 	devicename=overlay
-	[ ${KSU} = true ] && devicename=KSU
-	[ $APATCH = true ] && devicename=APatch
+	[ "$KSU" = true ] && devicename=KSU
+	[ "$APATCH" = true ] && devicename=APatch
 	target_hostsfile="/system/etc/hosts"
 	[ ! -d $MODDIR/workdir ] && mkdir $MODDIR/workdir
 	mount -t overlay -o lowerdir=/system/etc,upperdir=$MODDIR/system/etc,workdir=$MODDIR/workdir $devicename /system/etc
@@ -29,11 +29,16 @@ normal_mount() {
 }
 
 ksu_susfs_bind() { 
-	${SUSFS_BIN} add_sus_kstat '/system/etc/hosts'
-	mount_bind
-	${SUSFS_BIN} update_sus_kstat '/system/etc/hosts'
-	${SUSFS_BIN} add_try_umount $target_hostsfile 1
-	${SUSFS_BIN} add_try_umount $target_hostsfile > /dev/null 2>&1 #legacy susfs
+	if [ "$( ${SUSFS_BIN} show version | head -n1 | sed 's/v//; s/\.//g' )" -ge 153 ]; then
+		mount_bind
+		${SUSFS_BIN} add_try_umount $target_hostsfile 1
+	else
+		${SUSFS_BIN} add_sus_kstat '/system/etc/hosts'
+		mount_bind
+		${SUSFS_BIN} update_sus_kstat '/system/etc/hosts'
+		${SUSFS_BIN} add_try_umount $target_hostsfile 1
+		${SUSFS_BIN} add_try_umount $target_hostsfile > /dev/null 2>&1 #legacy susfs
+	fi
 	echo "bindhosts: service.sh - mode ksu_susfs_bind" >> /dev/kmsg
 }
 
@@ -84,7 +89,7 @@ ksu_susfs_overlay() {
 	overlay_routine
 	${SUSFS_BIN} add_sus_mount /system/etc
 	${SUSFS_BIN} add_try_umount /system/etc 1
-	${SUSFS_BIN} add_try_umount /system/etc > /dev/null 2>&1 #legacy susfs
+	${SUSFS_BIN} add_try_umount /system/etc > /dev/null 2>&1 # ultra-legacy susfs
 	echo "bindhosts: service.sh - mode ksu_susfs_overlay" >> /dev/kmsg
 }
 
@@ -119,13 +124,13 @@ esac
 # this way it can be used on termux
 # nicely enough magisk adds /debug_ramdisk and /sbin 
 # on $PATH, heres how we abuse it
-[ -f /data/adb/magisk/magisk ] && {
+if [ -z "$KSU" ] && [ -z "$APATCH" ]; then
 	find_rwdir
 	ln -sf $MODDIR/bindhosts.sh $rwdir/bindhosts
-	}
+fi
 
 ##################
-until [ "$(getprop sys.boot_completed)" == "1" ]; do
+until [ "$(getprop sys.boot_completed)" = "1" ]; do
     sleep 1
 done
 
