@@ -1,17 +1,19 @@
 ## bindhosts
-Systemless hosts for Apatch, KernelSU and Magisk
+Systemless hosts for APatch, KernelSU and Magisk
 
 ---
 
 # Changelog
-### 1.8.6
-- scripts: restore mode 1 on legacy susfs
-- webui: integrated documentation
-- scripts: mode 6 support for KSU_NEXT
-- webui: add german translation
+### 1.9.3
+- scripts: drop susfs_clone_perm
+- scripts/bindhosts: implement query
+- scripts/bindhosts: adblock: insert newline after every download
 
-### 1.8.5
-- webui: add chinese translation
-- webui: introduce multi-language support
-- webui: various ui tweaks
+### 1.9.2
+- webui: optimize ui
+- scripts: proper hosts module disabler function
+- scripts/bindhosts: adblock: filter out "!"
+- scripts/bindhosts: revert parallel downloads due to race condition
+
+
 

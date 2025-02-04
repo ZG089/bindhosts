@@ -6,9 +6,9 @@
   2. bind mount is NOT widely adopted
 
  Recommendations: 
-   - move to bind mount and use [Zygisk Assistant](https://github.com/snake-4/Zygisk-Assistant) OR [ZygiskNext](https://github.com/Dr-TSNG/ZygiskNext)'s enforce denylist
+   - move to bind mount and use [ZygiskNext](https://github.com/Dr-TSNG/ZygiskNext)'s enforce denylist
    - use hosts_file_redirect kpm
-      - [Usage Tutorial](https://github.com/backslashxx/bindhosts/issues/3)
+      - [Usage Tutorial](https://github.com/bindhosts/bindhosts/issues/3)
       - [Download here](https://github.com/AndroidPatch/kpm/releases)
    - if hosts_file_redirect fails, install [ZN-hostsredirect](https://github.com/aviraxp/ZN-hostsredirect/releases)
 
@@ -19,19 +19,18 @@
 
  Recommendations:
   - if kernel is non-gki and kernel lacks path_umount, ask kernel dev to [backport this feature](https://github.com/tiann/KernelSU/pull/1464)
-  - if you want to keep using Magical OverlayFS, [use this fork](https://github.com/backslashxx/magic_overlayfs), this fork respects skip_mount
   - alternatively, just install [ZN-hostsredirect](https://github.com/aviraxp/ZN-hostsredirect/releases)
 
 ## Magisk
  Hiding in Magisk (and clones) should just work as is.
  - Add the apps you want to hide root from to the denylist.
- - optionally you can also use [Shamiko](https://github.com/LSPosed/LSPosed.github.io/releases/) or [Zygisk Assistant](https://github.com/snake-4/Zygisk-Assistant)
+ - optionally you can also use [Shamiko](https://github.com/LSPosed/LSPosed.github.io/releases/)
 
 # FAQ
  - Why is this needed?
    - some root detections now includes and check for modified hosts file.
  - How do I check for detections?
-   - Read [how to check for detections](https://github.com/backslashxx/bindhosts/issues/4)
+   - Read [how to check for detections](https://github.com/bindhosts/bindhosts/issues/4)
  - How do I move to bind mount on APatch?
    - get ci builds [here](https://github.com/bmax121/APatch/actions)
 

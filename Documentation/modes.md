@@ -1,6 +1,6 @@
 # bindhosts operating modes
 - These are currently defined operating modes that are either probed at auto or available as opt-in
-- You can change operating mode by accessing to [developer option](https://github.com/backslashxx/bindhosts/issues/10#issue-2703531116).
+- You can change operating mode by accessing to [developer option](https://github.com/bindhosts/bindhosts/issues/10#issue-2703531116).
 
 #### Glossary of terms
  - magic mount - mounting method primarily used by magisk
@@ -13,8 +13,7 @@
  - **APatch** 
    - OverlayFS / magic mount
    - magic mount is Adaway compatible, OverlayFS is NOT
-   - Hiding: for OverlayFS mode, none.
-   - Hiding: for magic mount [zygisk-assistant](https://github.com/snake-4/Zygisk-Assistant)
+   - Hiding: [ZygiskNext](https://github.com/Dr-TSNG/ZygiskNext)'s enforce denylist
  - **Magisk** 
    - magic mount  
    - Adaway compatible  
@@ -27,7 +26,7 @@
 ---
 
 ## mode=1
-### ksu_susfs_bind mode
+### ksu_susfs_bind
 - susfs assisted mount --bind
 - KernelSU only  
 - Requires susfs-patched kernel and userspace tool  
@@ -53,7 +52,7 @@
 - in-kernel redirection of /system/etc/hosts for uid 0
 - APatch only, requires hosts_file_redirect KPM  
   - [hosts_file_redirect](https://github.com/AndroidPatch/kpm/blob/main/src/hosts_file_redirect/)  
-  - [How-to-Guide](https://github.com/backslashxx/bindhosts/issues/3)
+  - [How-to-Guide](https://github.com/bindhosts/bindhosts/issues/3)
 - Doesn't seem to work on all setups, hit-and-miss  
 - No Adaway compatibility  
 - Hiding: **best method for APatch, no mounts at all**
@@ -103,6 +102,7 @@
 - should work on all managers  
 - **OPT-IN** only due to **awfully high** susceptability to detections
 - leaks an overlayfs mount (with /data/adb upperdir), leaks globally modified hosts file
+- will NOT likely work on APatch bind_mount / MKSU if user has native f2fs /data casefolding
 - Adaway compatible
 - Hiding: essentially no hiding, needs assistance
 
@@ -113,8 +113,8 @@
 - susfs-assisted overlayfs rw mount
 - KernelSU only  
 - Requires susfs-patched kernel and userspace tool
+- will NOT likely work on APatch bind_mount / MKSU if user has native f2fs /data casefolding
 - Adaway compatible
 - Hiding: good method but ksu_susfs_bind is easier
 
 ---
-

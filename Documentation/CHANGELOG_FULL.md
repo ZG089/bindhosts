@@ -4,6 +4,45 @@ Systemless hosts for Apatch, KernelSU and Magisk
 ---
 
 # Changelog
+### 1.9.3
+- scripts: drop susfs_clone_perm
+- scripts/bindhosts: implement query
+- scripts/bindhosts: adblock: insert newline after every download
+
+### 1.9.2
+- webui: optimize ui
+- scripts: proper hosts module disabler function
+- scripts/bindhosts: adblock: filter out "!"
+- scripts/bindhosts: revert parallel downloads due to race condition
+
+### 1.9.1
+- scripts/bindhosts: quick reset/restore
+- webui/html: optimize input experience
+- webui/locales: greek translation
+
+### 1.9.0
+- webui: MMRL no-js-api warning
+- webui: multi language documentation
+
+### 1.8.9
+- webui/locales: spanish translation
+- scripts/bindhosts: concurrent source downloads
+- scripts/service: mode 1 fixups
+
+### 1.8.8
+- webui: QS-tile app install 
+- scripts/customize: QS-tile app install
+- webui/locales: russian + ukranian
+- scripts/post-fs-data: AP-litemode/MKSU-nomount support
+
+### 1.8.7
+- webui/locales: Czech language
+- webui/css: language menu auto sizing
+- webui/css: fix word overflow in control panel
+- webui/js: initialize dev option
+- webui/locales: Add Indonesian translation
+- webui/locales: update chinese translation
+
 ### 1.8.6
 - scripts: restore mode 1 on legacy susfs
 - webui: integrated documentation

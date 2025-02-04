@@ -31,13 +31,13 @@ normal_mount() {
 ksu_susfs_bind() { 
 	if [ "$( ${SUSFS_BIN} show version | head -n1 | sed 's/v//; s/\.//g' )" -ge 153 ]; then
 		mount_bind
-		${SUSFS_BIN} add_try_umount $target_hostsfile 1
+		${SUSFS_BIN} add_try_umount '/system/etc/hosts' 1
 	else
 		${SUSFS_BIN} add_sus_kstat '/system/etc/hosts'
 		mount_bind
 		${SUSFS_BIN} update_sus_kstat '/system/etc/hosts'
-		${SUSFS_BIN} add_try_umount $target_hostsfile 1
-		${SUSFS_BIN} add_try_umount $target_hostsfile > /dev/null 2>&1 #legacy susfs
+		${SUSFS_BIN} add_try_umount '/system/etc/hosts' 1
+		${SUSFS_BIN} add_try_umount '/system/etc/hosts' > /dev/null 2>&1 #legacy susfs
 	fi
 	echo "bindhosts: service.sh - mode ksu_susfs_bind" >> /dev/kmsg
 }
@@ -52,7 +52,7 @@ apatch_hfr() {
 	[ ! -f $target_hostsfile ] && {
 		cat /system/etc/hosts > $target_hostsfile
 		printf "127.0.0.1 localhost\n::1 localhost\n" >> $target_hostsfile
-		susfs_clone_perm $target_hostsfile /system/etc/hosts
+		hosts_set_perm "$target_hostsfile"
 		}
 	helper_mode="| hosts_file_redirect 💉"
 	echo "bindhosts: service.sh - mode apatch_hfr" >> /dev/kmsg
@@ -64,7 +64,7 @@ zn_hostsredirect() {
 		mkdir -p /data/adb/hostsredirect
 		cat /system/etc/hosts > $target_hostsfile
 		printf "127.0.0.1 localhost\n::1 localhost\n" >> $target_hostsfile
-		susfs_clone_perm $target_hostsfile /system/etc/hosts
+		hosts_set_perm "$target_hostsfile"
 		}
 	helper_mode="| ZN-hostsredirect 💉"
 	echo "bindhosts: service.sh - mode zn_hostsredirect" >> /dev/kmsg
@@ -126,7 +126,7 @@ esac
 # on $PATH, heres how we abuse it
 if [ -z "$KSU" ] && [ -z "$APATCH" ]; then
 	find_rwdir
-	ln -sf $MODDIR/bindhosts.sh $rwdir/bindhosts
+	ln -sf $MODDIR/bindhosts.sh "$rwdir/bindhosts"
 fi
 
 ##################

@@ -1,5 +1,4 @@
 import { initializeAvailableLanguages, detectUserLanguage, loadTranslations, translations } from './language.js';
-import { setupDocsMenu } from './docs.js';
 
 const basePath = "/data/adb/bindhosts";
 
@@ -14,8 +13,9 @@ const cover = document.querySelector('.cover');
 const headerBlock = document.querySelector('.header-block');
 const header = document.querySelector('.header');
 const actionButton = document.querySelector('.action-button');
-const inputs = document.querySelectorAll('input');
+const inputs = document.querySelectorAll('textarea');
 const focusClass = 'input-focused';
+const tilesContainer = document.getElementById('tiles-container');
 const toggleContainer = document.getElementById('update-toggle-container');
 const toggleVersion = document.getElementById('toggle-version');
 const actionRedirectContainer = document.getElementById('action-redirect-container');
@@ -133,14 +133,14 @@ async function checkMagisk() {
     }
 }
 
-// Function to load the version from module.prop and load the version in the WebUI
+// Function to load current mode
 async function getCurrentMode() {
     try {
         const command = "grep '^operating_mode=' /data/adb/modules/bindhosts/mode.sh | cut -d'=' -f2";
         const mode = await execCommand(command);
         updateMode(mode.trim());
     } catch (error) {
-        console.error("Failed to read description from mode.sh:", error);
+        console.error("Failed to read current mode from mode.sh:", error);
         updateMode("Error");
     }
 }
@@ -207,17 +207,56 @@ async function updateStatusFromModuleProp() {
     try {
         const command = "grep '^description=' /data/adb/modules/bindhosts/module.prop | sed 's/description=status: //'";
         const description = await execCommand(command);
+        if (!description.trim()) {
+            throw new Error("Description is empty");
+        }
         updateStatus(description.trim());
     } catch (error) {
         console.error("Failed to read description from module.prop:", error);
-        updateStatus("Error reading description from module.prop");
+        if (typeof ksu !== 'undefined' && ksu.mmrl) {
+            updateStatus("Please enable JavaScript API in MMRL settings:\n1. Settings\n2. Security\n3. Allow JavaScript API\n4. Bindhosts\n5. Enable both option");
+        } else {
+            updateStatus("Error reading description from module.prop");
+        }
     }
 }
 
 // Function to update the status text dynamically in the WebUI
 function updateStatus(statusText) {
     const statusElement = document.getElementById('status-text');
-    statusElement.textContent = statusText;
+    statusElement.innerHTML = statusText.replace(/\n/g, '<br>');
+}
+
+// function to check the if user has installed bindhosts app
+async function checkBindhostsApp() {
+    try {
+        const appInstalled = await execCommand(`pm path me.itejo443.bindhosts >/dev/null 2>&1 || echo "NO"`);
+        if (appInstalled.trim() === "NO") {
+            tilesContainer.style.display = "flex";
+        }
+    } catch (error) {
+        console.error("Error while checking bindhosts app:", error);
+    }
+    tilesContainer.addEventListener('click', async () => {
+        try {
+            showPrompt("control_panel.installing", true, undefined, "[+]");
+            await new Promise(resolve => setTimeout(resolve, 200));
+            const output = await execCommand("su -c 'sh /data/adb/modules/bindhosts/bindhosts-app.sh'");
+            const lines = output.split("\n");
+            lines.forEach(line => {
+                if (line.includes("[+]")) {
+                    showPrompt("control_panel.installed", true, 5000, "[+]");
+                    tilesContainer.style.display = "none";
+                } else if (line.includes("[x] Failed to download")) {
+                    showPrompt("control_panel.download_fail", false, undefined, "[×]");
+                } else if (line.includes("[*]")) {
+                    showPrompt("control_panel.install_fail", false, 5000, "[×]");
+                }
+            });
+        } catch (error) {
+            console.error("Execution failed:", error);
+        }
+    });
 }
 
 // Function to handle adding input to the file
@@ -229,22 +268,26 @@ async function handleAdd(fileType, prompt) {
         console.error("Input is empty. Skipping add operation.");
         return;
     }
+    const inputLines = inputValue.split('\n').map(line => line.trim()).filter(line => line !== "");
     try {
         const fileContent = await execCommand(`cat ${filePaths[fileType]}`);
-        const lines = fileContent.split('\n').map(line => line.trim()).filter(line => line !== "");
-        if (lines.includes(inputValue)) {
-            console.log(`"${inputValue}" is already in ${fileType}. Skipping add operation.`);
-            showPrompt(prompt, false, 2000, `${inputValue}`);
-            inputElement.value = "";
-            return;
+        const existingLines = fileContent.split('\n').map(line => line.trim()).filter(line => line !== "");
+
+        for (const line of inputLines) {
+            if (existingLines.includes(line)) {
+                console.log(`"${line}" is already in ${fileType}. Skipping add operation.`);
+                showPrompt(prompt, false, 2000, `${line}`);
+                continue;
+            }
+            await execCommand(`echo "${line}" >> ${filePaths[fileType]}`);
+            console.log(`Added "${line}" to ${fileType} successfully.`);
         }
-        await execCommand(`echo "${inputValue}" >> ${filePaths[fileType]}`);
-        console.log(`Added "${inputValue}" to ${fileType} successfully.`);
+
         inputElement.value = "";
         console.log(`Input box for ${fileType} cleared.`);
         loadFile(fileType);
     } catch (error) {
-        console.error(`Failed to add "${inputValue}" to ${fileType}: ${error}`);
+        console.error(`Failed to process input for ${fileType}: ${error}`);
     }
 }
 
@@ -670,11 +713,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadTranslations(userLang);
     cover.style.display = "none";
     setupHelpMenu();
-    setupDocsMenu();
     await getCurrentMode();
     await updateStatusFromModuleProp();
     await loadVersionFromModuleProp();
     await checkDevOption();
+    checkBindhostsApp();
     applyRippleEffect();
     checkUpdateStatus();
     checkRedirectStatus();
