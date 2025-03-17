@@ -4,6 +4,27 @@ Systemless hosts for Apatch, KernelSU and Magisk
 ---
 
 # Changelog
+### 1.9.9
+- webui: add whitelist sources
+- scripts: add support for remote whitelist source
+- scripts: download: test for curl parallel
+- scripts: simplify rwdir lookup
+
+### 1.9.8
+- webui: optimize
+- webui/css: better input box styling
+- webui/js: su -> sh
+- scripts/bindhosts: use persistent dir for cron logs
+
+### 1.9.7
+- scripts: add /dev as tmpfs dir
+
+### 1.9.6
+- webui: permission request on MMRL
+- webui/locales: Turkish translation
+- webui/locales: Arabic translation
+- webui/locales: Italian translation
+
 ### 1.9.5
 - scripts: implement mode 9 - ksu_susfs_bind_kstat
 - webui/html: add mode 9 as an option

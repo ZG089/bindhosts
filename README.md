@@ -1,4 +1,4 @@
-**English** | [简体中文](README_zh-CN.md)
+**English** | [简体中文](README_zh-CN.md) | [Türkçe](README_tr-TR.md)
 
 # bindhosts
 
@@ -26,6 +26,7 @@ Fully standalone, self-updating.
 
 ## Resources
 
+- [FAQ](Documentation/faq.md)
 - [Usage](Documentation/usage.md)
 - [Hiding](Documentation/hiding.md)
 - [Operating Modes](Documentation/modes.md)

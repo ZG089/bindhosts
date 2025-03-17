@@ -4,13 +4,15 @@ Systemless hosts for APatch, KernelSU and Magisk
 ---
 
 # Changelog
-### 1.9.5
-- scripts: implement mode 9 - ksu_susfs_bind_kstat
-- webui/html: add mode 9 as an option
+### 1.9.9
+- webui: add whitelist sources
+- scripts: add support for remote whitelist source
+- scripts: download: test for curl parallel
+- scripts: simplify rwdir lookup
 
-### 1.9.4
-- scripts/service: kstat spoofing on mode 1
-- scripts/bindhosts: prevent hosts file deadlock
-- scripts/bindhosts: opt prompt
-
+### 1.9.8
+- webui: optimize
+- webui/css: better input box styling
+- webui/js: su -> sh
+- scripts/bindhosts: use persistent dir for cron logs
 
