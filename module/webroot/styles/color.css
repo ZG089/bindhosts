@@ -1,0 +1,57 @@
+@import url('https://mui.kernelsu.org/mmrl/colors.css');
+
+:root {
+    /* Background colors */
+    --bg-primary: var(--background, #F5F5F5);
+    --bg-secondary: var(--tonalSurface, #fff);
+    --bg-input: var(--surfaceBright, #F5F5F5);
+
+    /* Text colors */
+    --text-constant: var(--onSurface, #000);
+    --text-primary: var(--onSurface, #000);
+    --text-muted: #757575;
+
+    /* Border colors */
+    --border-color: var(--outlineVariant, #ccc);
+    --border-alt: var(--filledTonalButtonContainerColor, #ddd);
+    --border-alt-text: var(--filledTonalButtonContentColor, #333);
+
+    /* Scroll bar colors */
+    --scroll-bar-color: #ddd;
+
+    /* Button colors */
+    --btn-primary: var(--primary, #007bff);
+    --btn-primary-text: var(--onPrimary, #fff);
+    --btn-delete: #FF4D4D;
+    --btn-edit: var(--error, #FFDD00);
+
+    /* Prompt colors */
+    --prompt-success: #4CAF50;
+    --prompt-error: #f44336;
+
+    /* Shadow colors */
+    --shadow-light: rgba(0, 0, 0, 0.2);
+    --shadow-medium: rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Background colors */
+        --bg-primary: var(--background, #151515);
+        --bg-secondary: var(--tonalSurface, #292929);
+        --bg-input: var(--surfaceBright, #1b1b1b);
+
+        /* Text colors */
+        --text-constant: var(--onSurface, #eee);;
+        --text-primary: var(--onSurface, #eee);
+        --text-muted: #C2C2C2;
+
+        /* Border colors */
+        --border-color: var(--outlineVariant, #636363);
+        --border-alt: var(--filledTonalButtonContainerColor, #666);
+        --border-alt-text: var(--filledTonalButtonContentColor, #eee);
+
+        /* Scroll bar colors */
+        --scroll-bar-color: #666;
+    }
+}

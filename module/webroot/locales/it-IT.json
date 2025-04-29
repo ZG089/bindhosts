@@ -1,5 +1,6 @@
 {
     "language": "Italiano",
+    "system_default": "Predefinito di sistema",
     "status": {
         "title": "Stato"
     },
@@ -12,8 +13,21 @@
         "adaway": "Resetta hosts in Adaway prima di continuare",
         "dev_opt": "Opzione sviluppatore abilitata",
         "dev_opt_true": "Opzione sviluppatore già abilitata",
-        "dev_opt_fail": "Errore durante l'abilitazione dell'opzione sviluppatore",
-        "reboot": "Riavvia per rendere effettivo, tocca per riavviare"
+        "reboot": "Riavvia per rendere effettivo, tocca per riavviare",
+        "save": "Salva",
+        "saved": "File salvato in",
+        "save_fail": "Errore nel salvataggio del file",
+        "file_too_large": "Modifica file non supportata su file grandi",
+        "file_name_empty": "Il nome del file non può essere vuoto",
+        "show_all": "Mostra tutti",
+        "more": "altro"
+    },
+    "query": {
+        "title": "Query Host",
+        "host_ip": "IP",
+        "host_domain": "Dominio",
+        "remove_prompt": "Whitelist",
+        "remove_error": "Errore nell'aggiunta alla whitelist"
     },
     "control_panel": {
         "title": "Panello di Controllo",
@@ -33,14 +47,20 @@
         "action_prompt_false": "Disabilitato reindirizzamento azione Magisk WebUI",
         "update_hosts_daily": "Aggiornamento Hosts Quotidiano",
         "cron_true": "Aggiunta voce Crontab",
-        "cron_false": "Rimossa vice Crontab"
+        "cron_false": "Rimossa vice Crontab",
+        "create_shortcut": "Crea collegamento sulla schermata principale",
+        "shortcut_created": "Collegamento sulla schermata principale creato"
     },
     "custom": {
         "title": "Regole Personalizzate",
         "guide1": "Aggiungi qui i reindirizzamenti personalizzati",
         "example": "Esempio:",
+        "format": "Formato:",
         "warning": "ATTENZIONE: le regole personalizzate vengono caricate sia durante l'esecuzione che durante il reset!",
         "prompt_fail": "è già nella regola personalizzata"
+    },
+    "import_custom": {
+        "title": "Importa Regole Personalizzate"
     },
     "source": {
         "title": "Fonti",
@@ -75,5 +95,37 @@
         "title": "Modalità di funzionamento",
         "detail": "Saperne di più",
         "reset": "Reset (auto)"
+    },
+    "more": {
+        "title": "Altro",
+        "documents": "Documenti",
+        "sources": "Fonti",
+        "usage": "Utilizzo",
+        "modes": "Modalità",
+        "hiding": "Nascondi",
+        "faq": "FAQ",
+        "support": "Supporto",
+        "support_issue": "Segnala un problema"
+    },
+    "confirmation": {
+        "title": "Confermare la rimozione?",
+        "message": "Sei sicuro di voler rimuovere",
+        "cancel": "Annulla",
+        "remove": "Rimuovi"
+    },
+    "footer": {
+        "home": "Home",
+        "hosts": "Hosts",
+        "more": "Altro"
+    },
+    "backup_restore": {
+        "backup_and_restore": "Backup & Ripristino",
+        "export": "Esporta configurazione",
+        "restore": "Ripristina configurazione",
+        "exported": "Configurazione salvata in",
+        "export_fail": "Errore durante l'esportazione della configurazione",
+        "invalid_config": "Configurazione bindhosts non valida",
+        "restored": "Configurazione ripristinata con successo",
+        "restore_fail": "Errore durante il ripristino della configurazione"
     }
 }

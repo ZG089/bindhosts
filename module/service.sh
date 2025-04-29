@@ -155,4 +155,8 @@ fi
 # update description
 sed -i "s/^description=.*/$string/g" $MODDIR/module.prop
 
+# remove previous linked hosts file and link again
+# hosts location might be different after reboot when user flash znhr/hfr
+sh $MODDIR/bindhosts.sh --setup-link
+
 # EOF

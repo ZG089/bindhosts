@@ -1,5 +1,6 @@
 {
     "language": "العربية",
+    "system_default": "النظام الافتراضي",
     "status": {
         "title": "الحالة"
     },
@@ -12,8 +13,21 @@
         "adaway": "قم بإعادة تهيئة ال hosts في AdAway",
         "dev_opt": "تم تفعيل خيار المطور",
         "dev_opt_true": "خيار المطور يعمل بالفعل",
-        "dev_opt_fail": "خطأ في تفعيل خيار المطور",
-        "reboot": "قم إعادة تشغيل الجهاز"
+        "reboot": "قم إعادة تشغيل الجهاز",
+        "save": "حفظ",
+        "saved": "تم حفظ الملف في",
+        "save_fail": "فشل حفظ الملف",
+        "file_too_large": "يدعم التعديل فقط على الملفات الكبيرة",
+        "file_name_empty": "لا يمكن أن يكون اسم الملف فارغًا",
+        "show_all": "عرض الكل",
+        "more": "أكثر"
+    },
+    "query": {
+        "title": "استعلام المضيف",
+        "host_ip": "IP",
+        "host_domain": "النطاق",
+        "remove_prompt": "القائمة البيضاء",
+        "remove_error": "فشل في إضافة إلى القائمة البيضاء"
     },
     "control_panel": {
         "title": "لوحة التحكم",
@@ -33,14 +47,20 @@
         "action_prompt_false": "تم ايقاف إعادة تحويل Action إلي واجهة الويب",
         "update_hosts_daily": "تحديث الhosts يوميا",
         "cron_true": "تمت اضافة مدخل Crontab",
-        "cron_false": "تمت إزالة مدخل Crontab"
+        "cron_false": "تمت إزالة مدخل Crontab",
+        "create_shortcut": "إنشاء اختصار للشاشة الرئيسية",
+        "shortcut_created": "تم إنشاء اختصار للشاشة الرئيسية"
     },
     "custom": {
         "title": "قوانين مخصصة",
         "guide1": "أضف تحويلات مخصصة هتا",
         "example": "مثلا:",
+        "format": "الهيئة:",
         "warning": "تحذير: القوانين المخصصة يتم استخدامها في حالة اعادة التهيئة او التحديث",
         "prompt_fail": "تمت اضافتها بالفعل"
+    },
+    "import_custom": {
+        "title": "استيراد قوانين مخصصة"
     },
     "source": {
         "title": "المصادر",
@@ -75,5 +95,37 @@
         "title": "وضع التشغيل",
         "detail": "اعرف المزيد",
         "reset": "اعادة تهيئة (تلقائي)"
+    },
+    "more": {
+        "title": "المزيد",
+        "documents": "المستندات",
+        "sources": "المصادر",
+        "usage": "الاستخدام",
+        "modes": "الأوضاع",
+        "hiding": "الإخفاء",
+        "faq": "الأسئلة الشائعة",
+        "support": "الدعم",
+        "support_issue": "الإبلاغ عن مشكلة"
+    },
+    "confirmation": {
+        "title": "تأكيد الحذف",
+        "message": "هل أنت متأكد أنك تريد حذف",
+        "cancel": "إلغاء",
+        "remove": "حذف"
+    },
+    "footer": {
+        "home": "الرئيسية",
+        "hosts": "Hosts",
+        "more": "المزيد"
+    },
+    "backup_restore": {
+        "backup_and_restore": "النسخ الاحتياطي والاستعادة",
+        "export": "تصدير التكوين",
+        "restore": "استعادة التكوين",
+        "exported": "تم حفظ التكوين في",
+        "export_fail": "فشل تصدير التكوين",
+        "invalid_config": "تكوين bindhosts غير صالح",
+        "restored": "تم استعادة التكوين بنجاح",
+        "restore_fail": "فشل استعادة التكوين"
     }
 }

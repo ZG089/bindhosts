@@ -1,0 +1,72 @@
+#copy-link {
+    margin: 0;
+    display: inline-block;
+    vertical-align: top;
+    color: var(--btn-primary);
+    background-color: var(--bg-primary);
+    width: fit-content;
+    border-radius: 5px;
+    word-break: break-all;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+}
+
+.docs-content #copy-link {
+    background-color: var(--bg-secondary);
+}
+
+.documents h1,
+.documents h2,
+.documents h3,
+.documents h4 {
+    margin-bottom: 5px;
+}
+
+.documents img {
+    max-width: 100%;
+    max-height: calc(100vh - var(--top-inset) - var(--bottom-inset));
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+.documents ul {
+    padding-left: 0;
+    margin: 0;
+}
+
+.documents ul li {
+    align-items: center;
+    margin-left: 20px;
+    margin-bottom: 5px;
+    list-style-type: disc;
+}
+
+.documents a {
+    color: var(--text-primary);
+    cursor: none;
+    transition: color 0.1s ease-out;
+}
+
+.documents a:active {
+    color: var(--btn-primary);
+}
+
+.documents pre {
+    background-color: var(--bg-secondary);
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+
+.documents code {
+    font-family: monospace;
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+    border-radius: 5px;
+    padding: 1px;
+    user-select: auto;
+}

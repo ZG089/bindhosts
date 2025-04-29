@@ -1,5 +1,6 @@
 {
     "language": "Türkçe",
+    "system_default": "Sistem Varsayılanı",
     "status": {
         "title": "Durum"
     },
@@ -12,8 +13,21 @@
         "adaway": "Devam etmeden önce Adaway'deki hosts'u sıfırlayın",
         "dev_opt": "Geliştirici seçeneği etkinleştirildi",
         "dev_opt_true": "Geliştirici seçeneği zaten etkin",
-        "dev_opt_fail": "Geliştirici seçeneği etkinleştirilirken hata oluştu",
-        "reboot": "Etkili olması için yeniden başlatın, yeniden başlatmak için dokunun"
+        "reboot": "Etkili olması için yeniden başlatın, yeniden başlatmak için dokunun",
+        "save": "Kaydet",
+        "saved": "Dosya kaydedildi",
+        "save_fail": "Dosya kaydedilemedi",
+        "file_too_large": "Dosya düzenleme desteği yok",
+        "file_name_empty": "Dosya adı boş olamaz",
+        "show_all": "Tümünü göster",
+        "more": "daha"
+    },
+    "query": {
+        "title": "Host Sorgulama",
+        "host_ip": "IP",
+        "host_domain": "Domain",
+        "remove_prompt": "Beyaz Liste",
+        "remove_error": "Beyaz listeye ekleme başarısız"
     },
     "control_panel": {
         "title": "Kontrol Paneli",
@@ -33,14 +47,20 @@
         "action_prompt_false": "Magisk eylem (action) yönlendirmesi WebUI'ı devre dışı bıraktı",
         "update_hosts_daily": "Hosts'u günlük güncelle",
         "cron_true": "Crontab girişi eklendi",
-        "cron_false": "Crontab girişi kaldırıldı"
+        "cron_false": "Crontab girişi kaldırıldı",
+        "create_shortcut": "Ana ekran kısayolu oluştur",
+        "shortcut_created": "Ana ekran kısayolu oluşturuldu"
     },
     "custom": {
         "title": "Özel Kurallar",
         "guide1": "Buraya özel yönlendirmeler ekleyin",
         "example": "Örnek:",
+        "format": "Format:",
         "warning": "UYARI: Özel kurallar hem çalıştırmada hem de sıfırlamada yüklenir!",
         "prompt_fail": "Zaten özel kuralda mevcut"
+    },
+    "import_custom": {
+        "title": "Özel Kuralları İçe Aktar"
     },
     "source": {
         "title": "Kaynaklar",
@@ -75,5 +95,37 @@
         "title": "Çalışma Modu",
         "detail": "Daha fazla bilgi edin",
         "reset": "Sıfırla (otomatik)"
+    },
+    "more": {
+        "title": "Daha Fazla",
+        "documents": "Belgeler",
+        "sources": "Kaynaklar",
+        "usage": "Kullanım",
+        "modes": "Modlar",
+        "hiding": "Gizle",
+        "faq": "SSS",
+        "support": "Destek",
+        "support_issue": "Sorun bildir"
+    },
+    "confirmation": {
+        "title": "Kaldırmayı Onayla?",
+        "message": "Kaldırmak istediğinizden emin misiniz",
+        "cancel": "İptal",
+        "remove": "Kaldır"
+    },
+    "footer": {
+        "home": "Ana Sayfa",
+        "hosts": "Hosts",
+        "more": "Daha Fazla"
+    },
+    "backup_restore": {
+        "backup_and_restore": "Yedekleme & Geri Yükleme",
+        "export": "Yapılandırmayı dışa aktar",
+        "restore": "Yapılandırmayı geri yükle",
+        "exported": "Yapılandırma şuraya kaydedildi",
+        "export_fail": "Yapılandırma dışa aktarılamadı",
+        "invalid_config": "Geçersiz bindhosts yapılandırması",
+        "restored": "Yapılandırma başarıyla geri yüklendi",
+        "restore_fail": "Yapılandırma geri yüklenemedi"
     }
 }
