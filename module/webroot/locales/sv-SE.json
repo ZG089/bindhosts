@@ -5,12 +5,6 @@
         "title": "Status"
     },
     "global": {
-        "executing": "Skriptet körs...",
-        "execute_error": "Fel vid exekvering av årgärdsskript:",
-        "unwritable": "Oskrivbar hosts-fil, behöver korrigeras",
-        "reset": "Återställning av hosts-fil!",
-        "disabled": "Modulen har inaktiverats",
-        "adaway": "Återställ hosts i Adaway innan du fortsätter",
         "dev_opt": "Utvecklaralternativ aktiverat",
         "dev_opt_true": "Utvecklaralternativet är redan aktiverat",
         "reboot": "Starta om för att verkställa, tryck för att starta om",
@@ -20,11 +14,14 @@
         "file_too_large": "Filredigering stöds inte på stora filer",
         "file_name_empty": "Filnamnet får inte vara tomt",
         "show_all": "Visa allt",
-        "more": "Mer"
+        "more": "Mer",
+        "action": "Action"
     },
     "query": {
-        "title": "Värdfråga",
+        "title": "Värdförfrågan",
+        "search": "Sök",
         "host_ip": "IP",
+        "host_type": "Typ",
         "host_domain": "Domän",
         "remove_prompt": "Vitlistad",
         "remove_error": "Det gick inte att vitlista"
@@ -48,8 +45,9 @@
         "update_hosts_daily": "Uppdatera Hosts dagligen",
         "cron_true": "Crontab-post tillagd",
         "cron_false": "Crontab-post borttagen",
-        "create_shortcut": "Skapa genväg på hemskärmen",
-        "shortcut_created": "Genväg på hemskärmen skapad"
+        "create_shortcut": "Skapa genväg på startskärmen",
+        "shortcut_created": "Genväg skapad på startskärmen",
+        "monitor_network_activity": "Övervaka nätverksaktivitet"
     },
     "custom": {
         "title": "Anpassade regler",
@@ -97,7 +95,6 @@
         "reset": "Återställ (automatiskt)"
     },
     "more": {
-        "title": "Mer",
         "documents": "Dokument",
         "sources": "Källor",
         "usage": "Användande",

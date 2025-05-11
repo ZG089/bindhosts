@@ -1,49 +1,42 @@
-import { exec, showPrompt, applyRippleEffect, checkMMRL, basePath, initialTransition, moduleDirectory, linkRedirect, filePaths } from './util.js';
-import { loadTranslations } from './language.js';
+import { exec, spawn, showPrompt, applyRippleEffect, checkMMRL, basePath, initialTransition, moduleDirectory, linkRedirect, filePaths, setupSwipeToClose } from './util.js';
+import { loadTranslations, translations } from './language.js';
 import { openFileSelector } from './file_selector.js';
+import { addCopyToClipboardListeners } from './docs.js';
+
+const tilesContainer = document.getElementById('tiles-container');
 
 /**
  * Check if user has installed bindhosts app
  * Show QS tile option when user has not installed bindhosts app
  * Click to install bindhosts app
- * @returns {Promise<void>}
+ * @returns {void}
  */
-async function checkBindhostsApp() {
-    const tilesContainer = document.getElementById('tiles-container');
-    try {
-        await new Promise(resolve => setTimeout(resolve, 80));
-        const appInstalled = await exec(`pm path me.itejo443.bindhosts >/dev/null 2>&1 || echo "false"`);
-        if (appInstalled.trim() === "false") {
+function checkBindhostsApp() {
+    const output = spawn("pm", ["path", "me.itejo443.bindhosts"]);
+    output.on('exit', (code) => {
+        if (code !== 0) {
             tilesContainer.style.display = "flex";
         }
-    } catch (error) {
-        console.error("Error while checking bindhosts app:", error);
-    }
+    });
 }
 
 /**
  * Install the bindhosts app, called by controlPanelEventlistener
- * @returns {Promise<void>}
+ * @returns {void}
  */
-async function installBindhostsApp () {
-    try {
-        showPrompt("control_panel.installing", true, undefined, "[+]");
-        await new Promise(resolve => setTimeout(resolve, 200));
-        const output = await exec(`sh ${moduleDirectory}/bindhosts-app.sh`);
-        const lines = output.split("\n");
-        lines.forEach(line => {
-            if (line.includes("[+]")) {
-                showPrompt("control_panel.installed", true, 5000, "[+]");
-                tilesContainer.style.display = "none";
-            } else if (line.includes("[x] Failed to download")) {
-                showPrompt("control_panel.download_fail", false, undefined, "[×]");
-            } else if (line.includes("[*]")) {
-                showPrompt("control_panel.install_fail", false, 5000, "[×]");
-            }
-        });
-    } catch (error) {
-        console.error("Execution failed:", error);
-    }
+function installBindhostsApp() {
+    showPrompt("control_panel.installing", true, 10000, "[+]");
+    const output = spawn("sh", [`${moduleDirectory}/bindhosts-app.sh`]);
+    output.stdout.on('data', (data) => {
+        if (data.includes("[+]")) {
+            showPrompt("control_panel.installed", true, 5000, "[+]");
+            tilesContainer.style.display = "none";
+        } else if (data.includes("[x] Failed to download")) {
+            showPrompt("control_panel.download_fail", false, undefined, "[×]");
+        } else if (data.includes("[*]")) {
+            showPrompt("control_panel.install_fail", false, 5000, "[×]");
+        }
+    });
 }
 
 /**
@@ -86,19 +79,16 @@ const actionRedirectStatus = document.getElementById('action-redirect');
 /**
  * Display action redirect switch when running in Magisk
  * Action redirect WebUI toggle
- * @returns {Promise<void>}
+ * @returns {void}
  */
-async function checkMagisk() {
-    try {
-        await new Promise(resolve => setTimeout(resolve, 80));
-        const magiskEnv = await exec(`command -v magisk >/dev/null 2>&1 && echo "true" || echo "false"`);
-        if (magiskEnv.trim() === "true") {
+function checkMagisk() {
+    const output = spawn("command", ['-v', 'magisk']);
+    output.on('exit', (code) => {
+        if (code === 0) {
             document.getElementById('action-redirect-container').style.display = "flex";
             checkRedirectStatus();
         }
-    } catch (error) {
-        console.error("Error while checking magisk", error);
-    }
+    });
 }
 
 /**
@@ -145,23 +135,25 @@ const cronToggle = document.getElementById('toggle-cron');
 /**
  * Check cron status
  * Event listener for cron toggle
- * @returns {Promise<void>}
+ * @returns {void}
  */
-async function checkCronStatus() {
-    try {
-        // Hide cron toggle when using AdAway
-        const status = await fetch('link/MODDIR/module.prop');
-        const text = await status.text();
-        if (text.includes('AdAway')) {
-            document.getElementById('cron-toggle-container').style.display = 'none';
-        }
-
-        await new Promise(resolve => setTimeout(resolve, 80));
-        const result = await exec(`grep -q "bindhosts.sh" ${basePath}/crontabs/root || echo "false"`);
-        cronToggle.checked = result.trim() === "false" ? false : true;
-    } catch (error) {
-        console.error('Error checking cron status:', error);
-    }
+function checkCronStatus() {
+    // Hide cron toggle when using AdAway
+    fetch('link/MODDIR/module.prop')
+        .then(response => response.text())
+        .then(text => {
+            if (text.includes('AdAway')) {
+                document.getElementById('cron-toggle-container').style.display = 'none';
+            } else {
+                const result = spawn("grep", ["-q", "bindhosts.sh", `${basePath}/crontabs/root`]);
+                result.on('exit', (code) => {
+                    cronToggle.checked = code === 0 ? true : false;
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error checking cron status:', error);
+        });
 }
 
 /**
@@ -211,6 +203,153 @@ function openLanguageMenu() {
         });
         languageMenuListener = true;
     }
+}
+
+/**
+ * Check availability of tcpdump
+ * @returns {void}
+ */
+function checkTcpdump() {
+    const result = spawn("command", ["-v", "tcpdump"]);
+    result.on('exit', (code) => {
+        if (code !== 0) document.getElementById('tcpdump-container').style.display = 'none';
+    });
+}
+
+let setupTcpdumpTerminal = false, contentBox = false;
+
+/**
+ * Open tcpdump terminal
+ * @returns {void}
+ */
+function openTcpdumpTerminal() {
+    const cover = document.querySelector('.document-cover');
+    const terminal = document.getElementById('tcpdump-terminal');
+    const terminalContent = document.getElementById('tcpdump-terminal-content');
+    const header = document.querySelector('.title-container');
+    const title = document.getElementById('title');
+    const backButton = document.getElementById('docs-back-btn');
+    const bodyContent = document.querySelector('.content');
+    const floatBtn = document.querySelector('.float');
+    const stopBtn = document.getElementById('stop-tcpdump');
+    const scrollTopBtn = document.getElementById('scroll-top');
+
+    terminalContent.innerHTML = `
+        <div class="tcpdump-header" id="tcpdump-header"></div>
+        <div class="box tcpdump-search translucent" id="tcpdump-search">
+            <h2>${ translations.query.search }</h2>
+            <input class="query-input translucent" type="text" id="tcpdump-search-input" placeholder="${ translations.query.search }" autocapitalize="off">
+        </div>
+    `;
+
+    if (!setupTcpdumpTerminal) {
+        setupSwipeToClose(terminal, cover, backButton);
+        stopBtn.addEventListener('click', () => stopTcpdump());
+        backButton.addEventListener('click', () => {
+            stopTcpdump();
+            floatBtn.style.transform = 'translateY(110px)';
+            floatBtn.classList.remove('inTerminal');
+            scrollTopBtn.style.pointerEvents = 'none';
+            scrollTopBtn.style.opacity = '0';
+            terminal.style.transform = 'translateX(100%)';
+            bodyContent.style.transform = 'translateX(0)';
+            cover.style.opacity = '0';
+            backButton.style.transform = 'translateX(-100%)';
+            header.classList.remove('back');
+            title.textContent = translations.footer.more;
+        });
+        const searchInput = document.getElementById('tcpdump-search-input');
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            const tcpdumpLines = document.querySelectorAll('.tcpdump-line');
+            tcpdumpLines.forEach(line => {
+                const domain = line.querySelector('.tcpdump-result');
+                if (!domain) return;
+                line.style.display = domain.textContent.toLowerCase().includes(searchTerm) ? 'flex': 'none';
+            });
+        });
+        scrollTopBtn.addEventListener('click', () => {
+            terminalContent.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        setupTcpdumpTerminal = true;
+    }
+
+    const tcpdumpHeader = document.getElementById('tcpdump-header');
+    const output = spawn("sh", [`${moduleDirectory}/bindhosts.sh`, '--tcpdump']);
+    output.stdout.on('data', (data) => {
+        if (data.includes('Out IP') || data.includes('In IP')) {
+            if (!contentBox) appendContentBox();
+            const match = data.match(/(\bA+|HTTPS)\?\s+([^\s.]+(?:\.[^\s.]+)+)\./i);
+            if (match) {
+                const type = match[1].toUpperCase();
+                const domain = match[2];
+                const div = document.createElement('div');
+                div.className = 'tcpdump-line';
+                div.innerHTML = `
+                    <div class="tcpdump-type">${type}</div>
+                    <div class="tcpdump-domain tcpdump-result ripple-element" id="copy-link">${domain}</div>
+                `;
+                document.querySelector('.tcpdump-content').appendChild(div);
+                terminalContent.scrollTop = terminalContent.scrollHeight;
+                addCopyToClipboardListeners();
+                applyRippleEffect();
+            }
+        } else if (!data.startsWith("[")) {
+            appendVerbose(data);
+        }
+    });
+    output.stderr.on('data', (data) => appendVerbose(data));
+
+    // Append content box before append content
+    const appendContentBox = () => {
+        const div = document.createElement('div');
+        div.className = 'tcpdump-content';
+        div.classList.add('translucent');
+        div.innerHTML = `
+            <div class="tcpdump-line tcpdump-line-header">
+                <div class="tcpdump-type">${translations.query.host_type}</div>
+                <div class="tcpdump-domain">${translations.query.host_domain}</div>
+            <div>
+        `;
+        terminalContent.appendChild(div);
+        contentBox = true;
+    };
+
+    // Append verbose log to header part
+    const appendVerbose = (data) => {
+        const p = document.createElement('p');
+        p.className = 'tcpdump-header-content';
+        p.textContent = data;
+        tcpdumpHeader.appendChild(p);
+    };
+
+    // Terminate tcpdump
+    const stopTcpdump = () => {
+        const output = spawn("sh", [`${moduleDirectory}/bindhosts.sh`, '--stop-tcpdump']);
+        output.on('exit', () => contentBox = false);
+        if (contentBox) {
+            document.getElementById('tcpdump-search').style.display = 'block';
+        }
+        floatBtn.style.transform = 'translateY(110px)';
+        if (terminalContent.scrollHeight > 1.5 * terminal.clientHeight) {
+            scrollTopBtn.style.pointerEvents = 'auto';
+            scrollTopBtn.style.opacity = '1';
+            floatBtn.style.transform = 'translateY(0)';
+            setTimeout(() => floatBtn.classList.add('inTerminal'), 100);
+        }
+    };
+
+    // Open output terminal
+    setTimeout(() => {
+        terminal.style.transform = 'translateX(0)';
+        bodyContent.style.transform = 'translateX(-20vw)';
+        cover.style.opacity = '1';
+        header.classList.add('back');
+        backButton.style.transform = 'translateX(0)';
+        floatBtn.style.transform = 'translateY(0)';
+        title.textContent = translations.control_panel.monitor_network_activity;
+        setTimeout(() => stopTcpdump(), 60000);
+    }, 50);
 }
 
 /**
@@ -298,6 +437,7 @@ RESTORE_EOF
 function controlPanelEventlistener(event) {
     const controlPanel = {
         "language-container": openLanguageMenu,
+        "tcpdump-container": openTcpdumpTerminal,
         "tiles-container": installBindhostsApp,
         "update-toggle-container": toggleModuleUpdate,
         "action-redirect-container": toggleActionRedirectWebui,
@@ -352,6 +492,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     checkBindhostsApp();
     checkMagisk();
     checkCronStatus();
+    checkTcpdump();
     controlPanelEventlistener();
     applyRippleEffect();
 });

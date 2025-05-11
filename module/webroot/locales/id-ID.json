@@ -5,12 +5,6 @@
         "title": "Status"
     },
     "global": {
-        "executing": "Menjalankan script...",
-        "execute_error": "Gagal menjalankan action script:",
-        "unwritable": "File hosts tidak dapat ditulis, butuh koreksi",
-        "reset": "Hosts file diatur ulang!",
-        "disabled": "Modul telah dinonaktifkan",
-        "adaway": "Atur ulang hosts di Adaway sebelum melanjutkan",
         "dev_opt": "Opsi pengembang diaktifkan",
         "dev_opt_true": "Opsi pengembang telah di diaktifkan",
         "reboot": "Reboot untuk menerapkan, tap untuk reboot",
@@ -20,11 +14,14 @@
         "file_too_large": "Hanya edit file yang diizinkan pada file besar",
         "file_name_empty": "Nama file tidak boleh kosong",
         "show_all": "Tampilkan semua",
-        "more": "lagi"
+        "more": "lagi",
+        "action": "Action"
     },
     "query": {
         "title": "Kueri Host",
+        "search": "Cari",
         "host_ip": "IP",
+        "host_type": "Tipe",
         "host_domain": "Domain",
         "remove_prompt": "Whitelist",
         "remove_error": "Gagal menambahkan ke whitelist"
@@ -48,8 +45,9 @@
         "update_hosts_daily": "Perbarui Host Setiap Hari",
         "cron_true": "Crontab entry ditambahkan",
         "cron_false": "Crontab entry dihapus",
-        "create_shortcut": "Buat pintasan layar utama",
-        "shortcut_created": "Pintasan layar utama dibuat"
+        "create_shortcut": "Buat pintasan di layar utama",
+        "shortcut_created": "Pintasan layar utama telah dibuat",
+        "monitor_network_activity": "Pantau Aktivitas Jaringan"
     },
     "custom": {
         "title": "Aturan kustom",
@@ -97,7 +95,6 @@
         "reset": "Atur ulang (auto)"
     },
     "more": {
-        "title": "Lainnya",
         "documents": "Dokumen",
         "sources": "Sumber",
         "usage": "Penggunaan",

@@ -5,12 +5,6 @@
         "title": "Stato"
     },
     "global": {
-        "executing": "Script in esecuzione...",
-        "execute_error": "Errore esecuzione script action:",
-        "unwritable": "File host non scrivibile, necessita correzione",
-        "reset": "Reset file hosts!",
-        "disabled": "Il modulo è stato disabilitato",
-        "adaway": "Resetta hosts in Adaway prima di continuare",
         "dev_opt": "Opzione sviluppatore abilitata",
         "dev_opt_true": "Opzione sviluppatore già abilitata",
         "reboot": "Riavvia per rendere effettivo, tocca per riavviare",
@@ -20,11 +14,14 @@
         "file_too_large": "Modifica file non supportata su file grandi",
         "file_name_empty": "Il nome del file non può essere vuoto",
         "show_all": "Mostra tutti",
-        "more": "altro"
+        "more": "altro",
+        "action": "Action"
     },
     "query": {
         "title": "Query Host",
+        "search": "Cerca",
         "host_ip": "IP",
+        "host_type": "Tipo",
         "host_domain": "Dominio",
         "remove_prompt": "Whitelist",
         "remove_error": "Errore nell'aggiunta alla whitelist"
@@ -48,8 +45,9 @@
         "update_hosts_daily": "Aggiornamento Hosts Quotidiano",
         "cron_true": "Aggiunta voce Crontab",
         "cron_false": "Rimossa vice Crontab",
-        "create_shortcut": "Crea collegamento sulla schermata principale",
-        "shortcut_created": "Collegamento sulla schermata principale creato"
+        "create_shortcut": "Crea collegamento nella schermata iniziale",
+        "shortcut_created": "Collegamento creato nella schermata iniziale",
+        "monitor_network_activity": "Monitora attività di rete"
     },
     "custom": {
         "title": "Regole Personalizzate",
@@ -97,7 +95,6 @@
         "reset": "Reset (auto)"
     },
     "more": {
-        "title": "Altro",
         "documents": "Documenti",
         "sources": "Fonti",
         "usage": "Utilizzo",

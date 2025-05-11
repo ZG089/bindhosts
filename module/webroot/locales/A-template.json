@@ -5,12 +5,6 @@
         "title": "Status"
     },
     "global": {
-        "executing": "Script running...",
-        "execute_error": "Error executing action script:",
-        "unwritable": "Unwritable hosts file, need correction",
-        "reset": "Hosts file reset!",
-        "disabled": "Module has been disabled",
-        "adaway": "Reset hosts in Adaway before continuing",
         "dev_opt": "Developer option enabled",
         "dev_opt_true": "Developer option already enabled",
         "reboot": "Reboot to take effect, tap to reboot",
@@ -20,11 +14,14 @@
         "file_too_large": "File edit is not supported on large file",
         "file_name_empty": "File name cannot be empty",
         "show_all": "Show All",
-        "more": "More"
+        "more": "More",
+        "action": "Action"
     },
     "query": {
         "title": "Host Query",
+        "search": "Search",
         "host_ip": "IP",
+        "host_type": "Type",
         "host_domain": "Domain",
         "remove_prompt": "Whitelisted",
         "remove_error": "Failed to whitelist"
@@ -49,7 +46,8 @@
         "cron_true": "Crontab entry added",
         "cron_false": "Crontab entry removed",
         "create_shortcut": "Create home screen shortcut",
-        "shortcut_created": "Home screen shortcut created"
+        "shortcut_created": "Home screen shortcut created",
+        "monitor_network_activity": "Monitor Network Activity"
     },
     "custom": {
         "title": "Custom Rules",
@@ -97,7 +95,6 @@
         "reset": "Reset (auto)"
     },
     "more": {
-        "title": "More",
         "documents": "Documents",
         "sources": "Sources",
         "usage": "Usage",

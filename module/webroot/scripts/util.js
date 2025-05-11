@@ -23,10 +23,11 @@ const forceUpdateButton = document.getElementById('force-update-btn');
 const content = document.querySelector('.content');
 
 /**
- * Execute shell commands
- * suppress stderr and return stdout only
- * @param {string} command - Command to execute
- * @returns {Promise<string>} - Command output
+ * Executes a shell command with KernelSU privileges
+ * @param {string} command - The shell command to execute
+ * @returns {Promise<string>} A promise that resolves with stdout content
+ * @throws {Error} If command execution fails with:
+ *   - stderr in error message
  */
 export async function exec(command) {
     return new Promise((resolve, reject) => {
@@ -47,6 +48,62 @@ export async function exec(command) {
             reject(error);
         }
     });
+}
+
+/**
+ * Spawns shell process with ksu spawn
+ * @param {string} command - The command to execute
+ * @param {string[]} [args=[]] - Array of arguments to pass to the command
+ * @param {Object{}} [options={}] - Array of options with:
+ *   - cwd <string> - Current working directory of the child process
+ *   - env <Object> - Environment key-value pairs
+ * @returns {Object} A child process object with:
+ *   - stdout: Stream for standard output
+ *   - stderr: Stream for standard error
+ *   - stdin: Stream for standard input
+ *   - on(event, listener): Attach event listener ('exit', 'error')
+ *   - emit(event, ...args): Emit events internally
+ */
+export function spawn(command, args = [], options = {}) {
+    const child = {
+        listeners: {},
+        stdout: new Stdio(),
+        stderr: new Stdio(),
+        stdin: new Stdio(),
+        on(event, listener) {
+            if (!this.listeners[event]) this.listeners[event] = [];
+            this.listeners[event].push(listener);
+        },
+        emit(event, ...args) {
+            if (this.listeners[event]) {
+                this.listeners[event].forEach(listener => listener(...args));
+            }
+        }
+    };
+    function Stdio() {
+        this.listeners = {};
+    }
+    Stdio.prototype.on = function(event, listener) {
+        if (!this.listeners[event]) {
+            this.listeners[event] = [];
+        }
+        this.listeners[event].push(listener);
+    };
+    Stdio.prototype.emit = function(event, ...args) {
+        if (this.listeners[event]) {
+            this.listeners[event].forEach(listener => listener(...args));
+        }
+    };
+    const callbackName = `spawn_callback_${Date.now()}`;
+    window[callbackName] = child;
+    child.on("exit", () => delete window[callbackName]);
+    try {
+        ksu.spawn(command, JSON.stringify(args), JSON.stringify(options), callbackName);
+    } catch (error) {
+        child.emit("error", error);
+        delete window[callbackName];
+    }
+    return child;
 }
 
 /**
@@ -76,13 +133,16 @@ export async function linkRedirect(link) {
 }
 
 /**
- * Add material design style ripple effect
- * @returns {void}
+ * Simulate MD3 ripple animation
+ * Usage: class="ripple-element" style="position: relative; overflow: hidden;"
+ * Note: Require background-color to work properly
+ * @return {void}
  */
 export function applyRippleEffect() {
     document.querySelectorAll('.ripple-element, .reboot').forEach(element => {
         if (element.dataset.rippleListener !== "true") {
             element.addEventListener("pointerdown", async (event) => {
+                // Pointer up event
                 const handlePointerUp = () => {
                     ripple.classList.add("end");
                     setTimeout(() => {
@@ -95,8 +155,6 @@ export function applyRippleEffect() {
                 element.addEventListener("pointerup", () => setTimeout(handlePointerUp, 80));
                 element.addEventListener("pointercancel", () => setTimeout(handlePointerUp, 80));
 
-                await new Promise(resolve => setTimeout(resolve, 80));
-                if (isScrolling || footerClick) return;
                 const ripple = document.createElement("span");
                 ripple.classList.add("ripple");
 
@@ -129,7 +187,9 @@ export function applyRippleEffect() {
                 };
                 ripple.style.backgroundColor = isDarkColor(bgColor) ? "rgba(255, 255, 255, 0.2)" : "";
 
-                // Append ripple and handle cleanup
+                // Append ripple if not scrolling
+                await new Promise(resolve => setTimeout(resolve, 80));
+                if (isScrolling || footerClick) return;
                 element.appendChild(ripple);
             });
             element.dataset.rippleListener = "true";
@@ -223,7 +283,7 @@ export function initialTransition() {
     const title = document.querySelector('.title-container');
     const modeBtn = document.getElementById('mode-btn');
     const saveBtn = document.getElementById('edit-save-btn');
-    const actionBtn = document.querySelector('.float');
+    const actionBtn = document.querySelector('.action-container');
     const backBtn = document.querySelector('.back-button');
     const focusedFooterBtn = document.querySelector('.focused-footer-btn');
     
@@ -271,7 +331,6 @@ export function setupSwipeToClose(element, cover, backButton) {
     const bodyContent = document.querySelector('.content');
 
     const handleStart = (e) => {
-        const editInput = document.getElementById('edit-input');
         const preElements = document.querySelectorAll('.documents *');
 
         // Get client coordinates from either touch or mouse event
@@ -284,10 +343,10 @@ export function setupSwipeToClose(element, cover, backButton) {
             return pre.contains(e.target) && pre.scrollLeft > 0;
         });
 
-        if (editInput && (editInput.scrollLeft !== 0 || editInput.focus) || isTouchInScrolledPre) {
+        if (element.id === 'edit-content' || isTouchInScrolledPre) {
             return;
         }
-        
+
         isDragging = true;
         isScrolling = false;
         startX = clientX;
@@ -372,10 +431,14 @@ content.addEventListener('scroll', () => {
         isScrolling = false;
     }, 200);
     if (content.scrollTop > lastScrollY && content.scrollTop > scrollThreshold) {
-        if (actionContainer) setTimeout(() => actionContainer.style.transform = 'translateY(110px)', 100);
+        if (actionContainer && !actionContainer.classList.contains('tcpdump-btn')) {
+            setTimeout(() => actionContainer.style.transform = 'translateY(110px)', 100);
+        }
         if (forceUpdateButton) forceUpdateButton.classList.remove('show');
     } else if (content.scrollTop < lastScrollY) {
-        if (actionContainer) actionContainer.style.transform = 'translateY(0)';
+        if (actionContainer && !actionContainer.classList.contains('tcpdump-btn')) {
+            actionContainer.style.transform = 'translateY(0)';
+        }
         if (forceUpdateButton) setTimeout(() => forceUpdateButton.classList.add('show'), 200);
     }
 
@@ -390,8 +453,33 @@ content.addEventListener('scroll', () => {
     lastScrollY = content.scrollTop;
 });
 
+// Terminal scroll event
+document.querySelectorAll('.terminal').forEach(terminal => {
+    terminal.addEventListener('scroll', () => {
+        isScrolling = true;
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            isScrolling = false;
+        }, 200);
+        if ((terminal.scrollTop > lastScrollY && terminal.scrollTop > scrollThreshold)
+            || (terminal.scrollTop === 0 && actionContainer.classList.contains('tcpdump-btn'))) {
+            if (actionContainer && actionContainer.classList.contains('inTerminal')) {
+                if (terminal.scrollTop === 0 && actionContainer.classList.contains('tcpdump-btn')) {
+                    setTimeout(() => actionContainer.style.transform = 'translateY(110px)', 100);
+                } else {
+                    actionContainer.style.transform = 'translateY(0)';
+                }
+            }
+        } else if (terminal.scrollTop < lastScrollY && terminal.scrollTop > terminal.clientHeight * 0.5) {
+            if (actionContainer && actionContainer.classList.contains('inTerminal')) {
+                actionContainer.style.transform = 'translateY(0)';
+            }
+        }
+        lastScrollY = terminal.scrollTop;
+    });
+});
 
-export async function setupCustomBackgournd() {
+export async function setupCustomBackground() {
     // custom background
     const bgContainer = document.getElementById("custom-bg");
     const bgImage = document.getElementById("custom-bg-img");
@@ -415,4 +503,4 @@ export async function setupCustomBackgournd() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", setupCustomBackgournd);
+document.addEventListener("DOMContentLoaded", setupCustomBackground);

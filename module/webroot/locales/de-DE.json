@@ -5,12 +5,6 @@
         "title": "Status"
     },
     "global": {
-        "executing": "Script wird ausgeführt...",
-        "execute_error": "Fehler beim Ausführen des Aktionsskripts:",
-        "unwritable": "Nicht beschreibbare hosts-Datei, Korrektur erforderlich",
-        "reset": "Hosts-Datei zurückgesetzt!",
-        "disabled": "Das Modul wurde deaktiviert",
-        "adaway": "Setzen Sie die Hosts in Adaway zurück, bevor Sie fortfahren.",
         "dev_opt": "Entwickler-Option aktiviert",
         "dev_opt_true": "Entwickler-Option bereits aktiviert",
         "reboot": "Betätigen Sie die Taste zum Neustart, damit die Änderungen wirksam werden.",
@@ -20,11 +14,14 @@
         "file_too_large": "Nur Umbenennung wird auf großen Dateien unterstützt",
         "file_name_empty": "Der Dateiname darf nicht leer sein",
         "show_all": "Alle anzeigen",
-        "more": "mehr"
+        "more": "mehr",
+        "action": "Action"
     },
     "query": {
         "title": "Host-Abfrage",
+        "search": "Suchen",
         "host_ip": "IP",
+        "host_type": "Typ",
         "host_domain": "Domain",
         "remove_prompt": "Whitelist",
         "remove_error": "Fehler beim Hinzufügen zur Whitelist"
@@ -48,8 +45,9 @@
         "update_hosts_daily": "Tägliche Aktualisierung der Hosts",
         "cron_true": "Crontab-Eintrag hinzugefügt",
         "cron_false": "Crontab-Eintrag entfernt",
-        "create_shortcut": "Verknüpfung zum Startbildschirm erstellen",
-        "shortcut_created": "Verknüpfung zum Startbildschirm erstellt"
+        "create_shortcut": "Verknüpfung auf dem Startbildschirm erstellen",
+        "shortcut_created": "Verknüpfung auf dem Startbildschirm erstellt",
+        "monitor_network_activity": "Netzwerkaktivität überwachen"
     },
     "custom": {
         "title": "Benutzerdefinierte Regeln",
@@ -97,7 +95,6 @@
         "reset": "Zurücksetzen (Auto)"
     },
     "more": {
-        "title": "Mehr",
         "documents": "Dokumente",
         "sources": "Quellen",
         "usage": "Verwendung",

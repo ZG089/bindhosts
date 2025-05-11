@@ -5,12 +5,6 @@
         "title": "Durum"
     },
     "global": {
-        "executing": "Komut dosyası çalışıyor...",
-        "execute_error": "Eylem (action) komut dosyası çalıştırılırken hata oluştu.",
-        "unwritable": "Hosts dosyasına yazılamıyor, düzeltilmesi gerekiyor",
-        "reset": "Hosts dosyası sıfırlandı!",
-        "disabled": "Modül devre dışı bırakıldı",
-        "adaway": "Devam etmeden önce Adaway'deki hosts'u sıfırlayın",
         "dev_opt": "Geliştirici seçeneği etkinleştirildi",
         "dev_opt_true": "Geliştirici seçeneği zaten etkin",
         "reboot": "Etkili olması için yeniden başlatın, yeniden başlatmak için dokunun",
@@ -20,11 +14,14 @@
         "file_too_large": "Dosya düzenleme desteği yok",
         "file_name_empty": "Dosya adı boş olamaz",
         "show_all": "Tümünü göster",
-        "more": "daha"
+        "more": "daha",
+        "action": "Action"
     },
     "query": {
         "title": "Host Sorgulama",
+        "search": "Ara",
         "host_ip": "IP",
+        "host_type": "Tür",
         "host_domain": "Domain",
         "remove_prompt": "Beyaz Liste",
         "remove_error": "Beyaz listeye ekleme başarısız"
@@ -48,8 +45,9 @@
         "update_hosts_daily": "Hosts'u günlük güncelle",
         "cron_true": "Crontab girişi eklendi",
         "cron_false": "Crontab girişi kaldırıldı",
-        "create_shortcut": "Ana ekran kısayolu oluştur",
-        "shortcut_created": "Ana ekran kısayolu oluşturuldu"
+        "create_shortcut": "Ana ekrana kısayol oluştur",
+        "shortcut_created": "Ana ekran kısayolu oluşturuldu",
+        "monitor_network_activity": "Ağ Etkinliğini İzle"
     },
     "custom": {
         "title": "Özel Kurallar",
@@ -97,7 +95,6 @@
         "reset": "Sıfırla (otomatik)"
     },
     "more": {
-        "title": "Daha Fazla",
         "documents": "Belgeler",
         "sources": "Kaynaklar",
         "usage": "Kullanım",

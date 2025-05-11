@@ -86,7 +86,7 @@ body {
     flex-direction: column;
     align-items: flex-end;
     width: 100%;
-    z-index: 2;
+    z-index: 5;
     transform: translateY(110px);
     transition: transform 0.3s ease;
     pointer-events: none;
@@ -110,6 +110,14 @@ body {
         fill: var(--btn-primary-text);
         z-index: 1;
     }
+}
+
+#scroll-top,
+#close-terminal {
+    position: absolute;
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .force-update-button {
@@ -170,6 +178,7 @@ body {
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
+.tcpdump-content,
 .box {
     position: relative;
     flex-shrink: 0;
@@ -195,6 +204,12 @@ body {
 
 .placeholder.focused {
     padding: 25vh 0;
+}
+
+.tcpdump-content,
+.tcpdump-search {
+    width: calc(100% - 30px);
+    max-width: none;
 }
 
 /**
@@ -223,6 +238,10 @@ body {
     outline-color: var(--btn-primary);
     background-color: var(--bg-input);
     color: var(--text-primary);
+}
+
+#tcpdump-search-input {
+    width: 100%;
 }
 
 .search-btn {
