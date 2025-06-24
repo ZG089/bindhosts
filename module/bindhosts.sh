@@ -370,13 +370,14 @@ adblock() {
 	# if there is a remote whitelist, we clean it up
 	if [ -f "$rwdir/remote_whitelist" ]; then
 		sed -i '/#/d; /!/d; s/  */ /g; /^$/d; s/\r$//' "$rwdir/remote_whitelist"
-		for i in $(sort -u "$rwdir/remote_whitelist" ); do echo "0.0.0.0 $i" ; done >> "$rwdir/tempwhitelist"
+		for i in $(sort -u "$rwdir/remote_whitelist" ); do echo "$i" ; done >> "$rwdir/tempwhitelist"
 	fi
-	for i in $(sed '/#/d' $PERSISTENT_DIR/whitelist.txt); do echo "0.0.0.0 $i" ; done >> "$rwdir/tempwhitelist"
+	for i in $(sed '/#/d' $PERSISTENT_DIR/whitelist.txt); do echo "$i" ; done >> "$rwdir/tempwhitelist"
 	# sed strip out everything with # and !, double space to single space, delete empty lines, dos2unix (CRLF), replace all 127.0.0.1 to 0.0.0.0
 	# then sort uniq, then grep out whitelist.txt from it
 	sed -i '/#/d; /!/d; s/  */ /g; /^$/d; s/\r$//; s/127.0.0.1/0.0.0.0/g' "$rwdir/temphosts"
-	sort -u "$rwdir/temphosts" | grep -Fxvf "$rwdir/tempwhitelist" >> $target_hostsfile
+	# no need to -x on grep, allow wildmatches! bindhosts/issue #112
+	sort -u "$rwdir/temphosts" | grep -Fvf "$rwdir/tempwhitelist" >> $target_hostsfile
 	# mark it, will be read by service.sh to deduce
 	echo "# bindhosts v$versionCode" >> $target_hostsfile
 }
@@ -558,6 +559,71 @@ setup_link() {
     [ -L "$MODDIR/webroot/link/PERSISTENT_DIR" ] || ln -s "$PERSISTENT_DIR" "$MODDIR/webroot/link/PERSISTENT_DIR"
 }
 
+manager_install_zip() {
+	# sanity check	
+	if [ -z "$1" ] || [ ! -f "$1" ] || [ ! -f "$PERSISTENT_DIR/root_manager.sh" ]; then 
+		echo "[!] no manager logged, nothing specified or file not found"
+		return
+	fi
+	# read which manager
+	. "$PERSISTENT_DIR/root_manager.sh"
+	case $manager in
+		APatch) 
+			echo "[+] installing via apd" 
+			apd module install "$1" 
+			;;
+		KernelSU) 
+			echo "[+] installing via ksud" 
+			ksud module install "$1" 
+			;;
+		Magisk) 
+			echo "[+] installing via magisk" 
+			magisk --install-module "$1" 
+			;;
+		*) # catch invalid
+			echo "[!] root manager unknown??"
+			exit 1
+			;;
+	esac
+}
+
+install_latest_artifact() {
+	# likely won't happen but lets be defensive
+	if [ ! -f "$PERSISTENT_DIR/root_manager.sh" ]; then
+		echo "[!] root manager not detected"
+		exit 1
+	fi
+
+	# via nightly.link
+	latest_zip_url=$(download "https://nightly.link/bindhosts/bindhosts/workflows/release/master?preview" | sed 's/>/\n/g; s/</\n/g' | busybox grep -E "^https.*\.zip$" | head -n1)
+	latest_zip_local="$rwdir/bindhosts_latest.zip"
+
+	# download
+	if echo "$latest_zip_url" | grep -q "^https"; then
+		echo "[+] downloading: $latest_zip_url "
+		download "$latest_zip_url" > "$latest_zip_local"
+		# check if empty
+		if [ ! -s "$latest_zip_local" ]; then
+			echo "[!] artifact download failed or file is empty"
+			rm "$latest_zip_local"
+			exit 1
+		fi
+	else
+		echo "[!] failure grabbing latest artifact" 
+		exit 1
+	fi
+
+	# install
+	if [ -f "$latest_zip_local" ] ; then
+		echo "[+] zip: $latest_zip_local" 
+		manager_install_zip "$latest_zip_local"
+	else
+		echo "[x] artifact download fail"
+		exit 1
+	fi
+	[ -f "$latest_zip_local" ] && rm "$latest_zip_local"
+}
+
 show_help () {
 	echo "[%] $( grep '^description=' $MODDIR/module.prop | sed 's/description=//' )"
 	echo "usage:"
@@ -587,6 +653,7 @@ case "$1" in
 	--toggle-updatejson) toggle_updatejson; exit ;;
 	--hosts-lastmod) hosts_lastmod; exit ;;
 	--whitelist) instant_whitelist "$@"; exit ;;
+	--install-canary) install_latest_artifact; exit;;
 	--setup-link) setup_link; exit;;
 	--help|*) show_help; exit ;;
 esac

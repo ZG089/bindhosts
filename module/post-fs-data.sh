@@ -1,8 +1,9 @@
 #!/bin/sh
 PATH=/data/adb/ap/bin:/data/adb/ksu/bin:/data/adb/magisk:$PATH
 MODDIR="/data/adb/modules/bindhosts"
+PERSISTENT_DIR="/data/adb/bindhosts"
 . $MODDIR/utils.sh
-SUSFS_BIN=/data/adb/ksu/bin/ksu_susfs
+SUSFS_BIN="/data/adb/ksu/bin/ksu_susfs"
 
 # always try to prepare hosts file
 if [ ! -f $MODDIR/system/etc/hosts ]; then
@@ -28,6 +29,18 @@ if { [ "$APATCH" = "true" ] && [ ! "$APATCH_BIND_MOUNT" = "true" ]; } ||
 	mode=2
 fi
 
+# we can force mode 2 if user has something that gives unconditional umount to /system/etc/hosts
+# so far ReZygisk, NoHello, Zygisk Assistant does it
+# while Zygisk Next can also do it, it will only do that when denylist is enforced (DE)
+# while deducing DE status is likely possible, that thing is hot-toggleable anyway so theres no assurance.
+denylist_handlers="rezygisk zygisk-assistant zygisk_nohello"
+for module_name in $denylist_handlers; do
+	if [ -d "/data/adb/modules/$module_name" ] && [ ! -f "/data/adb/modules/$module_name/disable" ]; then
+		echo "bindhosts: post-fs-data.sh - $module_name found" >> /dev/kmsg
+		mode=2
+	fi
+done
+
 # ksu next 12183
 # ksu next added try_umount /system/etc/hosts recently
 # lets try to add it onto the probe
@@ -38,11 +51,16 @@ fi
 # ksu+susfs operating_mode
 # handle probing for both modern and legacy susfs
 if [ "$KSU" = true ] && [ -f ${SUSFS_BIN} ] ; then
-	if [ "$( ${SUSFS_BIN} show version | head -n1 | sed 's/v//; s/\.//g' )" -ge 153 ]; then
+	if ${SUSFS_BIN} show enabled_features | grep -q "CONFIG_KSU_SUSFS_TRY_UMOUNT" >/dev/null 2>&1; then
+		echo "bindhosts: post-fs-data.sh - susfs with try_umount found!" >> /dev/kmsg
+		mode=1
+	elif [ "$( ${SUSFS_BIN} show version | head -n1 | sed 's/v//; s/\.//g' )" -ge 153 ]; then
+		# this assumes feature was built
 		echo "bindhosts: post-fs-data.sh - susfs 153+ found" >> /dev/kmsg
 		mode=1
 	else
 		# theres no other way to probe for legacy susfs
+		# this assumes feature was built
 		dmesg | grep -q "susfs" > /dev/null 2>&1 && {
 		echo "bindhosts: post-fs-data.sh - legacy susfs found" >> /dev/kmsg
 		mode=1
@@ -94,6 +112,18 @@ skip_mount=1
 # disable all other hosts module
 disable_hosts_modules_verbose=2
 disable_hosts_modules
+
+# detect root manager
+# Take note of capitalization when using them!
+# official names are used!
+[ "$APATCH" = true ] && current_manager="APatch"
+[ "$KSU" = true ] && current_manager="KernelSU"
+[ ! "$APATCH" = true ] && [ ! "$KSU" = true ] && current_manager="Magisk"
+[ -f "$PERSISTENT_DIR/root_manager.sh" ] && . "$PERSISTENT_DIR/root_manager.sh"
+# this will likely never happen but just to be sure
+if [ ! "$current_manager" = "$manager" ]; then
+	echo "manager=$current_manager" > "$PERSISTENT_DIR/root_manager.sh"
+fi
 
 # debugging
 echo "bindhosts: post-fs-data.sh - probing done" >> /dev/kmsg

@@ -4,6 +4,23 @@ Systemless hosts for APatch, KernelSU and Magisk
 ---
 
 # Changelog
+### 2.0.5
+- action: remove MMRL from action redirect WebUI
+- webui: fix some false error log
+- scripts: probe ReZygisk for mode 2
+- scripts: properly detect susfs enabled_features
+
+### 2.0.4
+- scripts: pull shamiko out of mode 2
+
+### 2.0.3
+- webui: ksu.spawn on update
+- webui: ksu.spawn on tcpdump
+- webui: WebUI X support and fixes
+- webui/locales: JP and CN
+- scripts: --install-canary
+- scripts: whitelist wildcarding support
+
 ### 2.0.2
 - webui: Add support to create home screen shortcut in WebUI X
 - webui: optimize animation
